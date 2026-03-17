@@ -71,7 +71,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Jornada Laboral API v1");
-        c.RoutePrefix = "swagger"; // Disponible en http://localhost:5000/swagger
+        c.RoutePrefix = "swagger"; // Disponible en http://localhost:5277/swagger
     });
 }
 
@@ -83,7 +83,7 @@ app.UseAuthorization();
 // Mapea las rutas de los Controllers (GET, POST, etc.)
 app.MapControllers();
 
-// Sirve el index.html desde la carpeta wwwroot al abrir http://localhost:5000
+// Sirve el index.html desde la carpeta wwwroot al abrir http://localhost:5277
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
