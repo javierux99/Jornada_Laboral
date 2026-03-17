@@ -1,0 +1,39 @@
+{
+  "Version": 1,
+  "Hash": "PCX6xyI8G9eOV/bYweYod6f0q1P3raIIVWkhVNeRbXc=",
+  "Source": "JornadaLaboral.API",
+  "BasePath": "_content/JornadaLaboral.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "JornadaLaboral.API\\wwwroot",
+      "Source": "JornadaLaboral.API",
+      "ContentRoot": "C:\\Users\\Usuario\\Documents\\GitHub\\Jornada_Laboral\\Jornada_Laboral\\JornadaLaboral.API\\wwwroot\\",
+      "BasePath": "_content/JornadaLaboral.API",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Usuario\\Documents\\GitHub\\Jornada_Laboral\\Jornada_Laboral\\JornadaLaboral.API\\wwwroot\\index.html",
+      "SourceId": "JornadaLaboral.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Usuario\\Documents\\GitHub\\Jornada_Laboral\\Jornada_Laboral\\JornadaLaboral.API\\wwwroot\\",
+      "BasePath": "_content/JornadaLaboral.API",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    }
+  ]
+}

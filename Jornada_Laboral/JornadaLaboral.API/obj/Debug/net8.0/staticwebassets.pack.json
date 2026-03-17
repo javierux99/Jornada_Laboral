@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\Usuario\\Documents\\GitHub\\Jornada_Laboral\\Jornada_Laboral\\JornadaLaboral.API\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.JornadaLaboral.API.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.JornadaLaboral.API.props",
+      "PackagePath": "build\\JornadaLaboral.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.JornadaLaboral.API.props",
+      "PackagePath": "buildMultiTargeting\\JornadaLaboral.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.JornadaLaboral.API.props",
+      "PackagePath": "buildTransitive\\JornadaLaboral.API.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

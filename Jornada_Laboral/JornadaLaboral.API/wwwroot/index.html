@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Control de Jornada Laboral</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root{
+  --primary:#2563eb;
+  --primary-dark:#1e40af;
+  --primary-soft:#dbeafe;
+
+  --success:#16a34a;
+  --danger:#dc2626;
+
+  --bg:#f6f8fb;
+  --card:#ffffff;
+
+  --text:#0f172a;
+  --text-soft:#64748b;
+
+  --border:#e5e7eb;
+  --shadow:0 10px 25px rgba(0,0,0,.06);
+  }
+
+  body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:
+    radial-gradient(circle at 20% 20%,#eef4ff 0%,transparent 40%),
+    radial-gradient(circle at 80% 0%,#e8f0ff 0%,transparent 45%),
+    var(--bg);
+
+  min-height:100vh;
+  padding:40px 20px 60px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  }
+
+    .toast {
+      position: fixed; top: 1.5rem; left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      background: var(--blue-600); color: #fff;
+      font-size: 13px; font-weight: 500;
+      padding: .65rem 1.25rem; border-radius: 10px;
+      display: flex; align-items: center; gap: 7px;
+      opacity: 0; transition: opacity .25s, transform .25s;
+      pointer-events: none; z-index: 999; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast svg  { width: 14px; height: 14px; flex-shrink: 0; }
+
+    .app-header{
+      width:100%;
+      max-width:620px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:28px;
+    }
+    .brand-icon{
+      width:44px;
+      height:44px;
+      border-radius:12px;
+      background:linear-gradient(135deg,#2563eb,#1e40af);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 6px 18px rgba(37,99,235,.35);
+    }
+    .brand-icon svg { width: 20px; height: 20px; }
+    .brand-name{
+      font-size:18px;
+      font-weight:700;
+      color:var(--text);
+    }
+    .brand-sub{
+      font-size:13px;
+      color:var(--text-soft);
+    }
+
+  .card{
+  width:100%;
+  max-width:620px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+
+  box-shadow:var(--shadow);
+
+  margin-bottom:20px;
+  overflow:hidden;
+  transition:.25s;
+ }
+.card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 15px 35px rgba(0,0,0,.08);
+ }
+
+    .section-label {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: .07em; text-transform: uppercase;
+      color: var(--blue-400); margin-bottom: .875rem;
+    }
+
+    .input-block { padding: 1.25rem 1.5rem; }
+    .input-row   { display: flex; gap: 10px; }
+    .field-wrap  { flex: 1; position: relative; }
+
+    .field-icon {
+      position: absolute; left: 12px; top: 50%;
+      transform: translateY(-50%);
+      width: 16px; height: 16px; color: var(--blue-400); pointer-events: none;
+    }
+
+    .code-input {
+      width: 100%; height: 44px;
+      padding: 0 1rem 0 2.5rem;
+      border: 1.5px solid var(--blue-100); border-radius: 10px;
+      font-family: inherit; font-size: 15px; font-weight: 500;
+      color: var(--blue-800); background: #f5f9ff;
+      outline: none; transition: border-color .2s, background .2s;
+    }
+    .code-input:focus    { border-color: var(--blue-600); background: #fff; }
+    .code-input:disabled { opacity: .5; cursor: not-allowed; }
+    .code-input::placeholder { color: var(--blue-200); font-weight: 400; }
+
+    .btn-start{
+      height:44px;
+      padding:0 22px;
+
+      background:linear-gradient(135deg,#2563eb,#1e40af);
+      color:white;
+
+      border:none;
+      border-radius:10px;
+
+      font-weight:600;
+      font-size:14px;
+
+      cursor:pointer;
+
+      display:flex;
+      align-items:center;
+      gap:7px;
+
+      transition:.2s;
+    }
+    .btn-start:hover{
+      transform:translateY(-1px);
+      box-shadow:0 8px 18px rgba(37,99,235,.35);
+    }
+    .btn-start:active{
+      transform:scale(.96);
+    }
+    .btn-start:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-start svg { width: 14px; height: 14px; }
+
+    .alert { display: none; margin-top: .875rem; padding: .65rem 1rem; border-radius: 8px; font-size: 13px; line-height: 1.5; align-items: flex-start; gap: 8px; }
+    .alert.show { display: flex; }
+    .alert svg  { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
+    .alert-danger { background: var(--red-50);   border: 1px solid var(--red-200);   color: var(--red-800);   }
+    .alert-warn   { background: var(--amber-50); border: 1px solid var(--amber-200); color: var(--amber-800); }
+
+    .timer-section {
+      background: var(--blue-50); border-top: 0.5px solid var(--blue-100);
+      padding: 2rem 1.5rem;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+
+    .worker-badge {
+      display: flex; align-items: center; gap: 7px;
+      background: #fff; border: 1px solid var(--blue-100);
+      border-radius: 20px; padding: 4px 14px;
+      font-size: 12px; font-weight: 500; color: var(--blue-600);
+    }
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--blue-200); flex-shrink: 0; transition: background .3s;
+    }
+    .status-dot.active { background: #22c55e; animation: blink 1.5s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+    .timer-display{
+      font-size:64px;
+      font-weight:700;
+      letter-spacing:.05em;
+      color:#cbd5f5;
+
+      font-variant-numeric:tabular-nums;
+    }
+    .timer-display.running{
+      color:var(--primary);
+    }
+    .timer-meta { font-size: 12px; color: var(--blue-400); min-height: 16px; }
+
+    .end-section {
+      padding: 1.125rem 1.5rem; border-top: 0.5px solid var(--blue-100); display: none;
+    }
+    .btn-end {
+      width: 100%; height: 44px;
+      background: var(--red-50); color: var(--red-800);
+      border: 1.5px solid var(--red-200); border-radius: 10px;
+      font-family: inherit; font-size: 14px; font-weight: 600;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background .15s, transform .1s;
+    }
+    .btn-end:hover  { background: #ffe0e0; }
+    .btn-end:active { transform: scale(.98); }
+    .btn-end svg    { width: 14px; height: 14px; }
+
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 10px; padding: 1.25rem 1.5rem;
+      border-top: 0.5px solid var(--blue-100);
+    }
+    .stat-card{
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px;
+
+      transition:.2s;
+    }
+    .stat-card:hover{
+      background:white;
+      transform:translateY(-2px);
+    }
+    .stat-label{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      color:var(--text-soft);
+    }
+    .stat-value{
+      font-size:26px;
+      font-weight:700;
+      color:var(--text);
+    }
+
+    .records-section { padding: 1.25rem 1.5rem; }
+    .records-empty { text-align: center; padding: 1.5rem 0; font-size: 13px; color: var(--blue-200); }
+
+    .records-table { width: 100%; border-collapse: collapse; }
+    .records-table th{
+      text-align:left;
+      font-size:11px;
+      text-transform:uppercase;
+      color:var(--text-soft);
+      padding-bottom:10px;
+      border-bottom:1px solid var(--border);
+    }
+    .records-table td{
+      padding:10px 6px;
+      font-size:14px;
+      border-bottom:1px solid #f1f5f9;
+    }
+    .records-table tr:last-child td { border-bottom: none; }
+
+    .code-pill { display: inline-block; background: var(--blue-50); color: var(--blue-800); border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 600; }
+    .badge-active { display: inline-flex; align-items: center; gap: 5px; background: #f0fff4; color: #166534; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 500; }
+    .badge-dot    { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; animation: blink 1.5s infinite; }
+    .total-text   { font-weight: 600; color: var(--blue-800); }
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2 8 6 12 14 4"/></svg>
+  <span id="toastMsg">Jornada registrada</span>
+</div>
+
+<div class="app-header">
+  <div class="brand-icon">
+    <svg viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+      <circle cx="10" cy="10" r="8"/><polyline points="10 6 10 10 13 12"/>
+    </svg>
+  </div>
+  <div>
+    <div class="brand-name">Control de Jornada Laboral</div>
+    <div class="brand-sub">Registro de entrada y salida</div>
+  </div>
+</div>
+
+<!-- Panel de registro -->
+<div class="card">
+  <div class="input-block">
+    <div class="section-label">Identificación del trabajador</div>
+    <div class="input-row">
+      <div class="field-wrap">
+        <svg class="field-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="2" y="3" width="12" height="10" rx="2"/>
+          <line x1="5" y1="7" x2="11" y2="7"/>
+          <line x1="5" y1="10" x2="9"  y2="10"/>
+        </svg>
+        <input id="codeInput" class="code-input" type="text"
+               placeholder="Ingrese su código (ej: T001)"
+               maxlength="20" autocomplete="off" spellcheck="false" />
+      </div>
+      <button id="btnStart" class="btn-start" onclick="handleStart()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="4 2 14 8 4 14"/></svg>
+        Iniciar jornada
+      </button>
+    </div>
+
+    <div id="alertError" class="alert alert-danger">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8"/><circle cx="8" cy="11" r=".6" fill="currentColor" stroke="none"/></svg>
+      <span id="alertErrorMsg"></span>
+    </div>
+    <div id="alertWarn" class="alert alert-warn">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2 L14 13 H2 Z"/><line x1="8" y1="7" x2="8" y2="10"/><circle cx="8" cy="12" r=".6" fill="currentColor" stroke="none"/></svg>
+      <span id="alertWarnMsg"></span>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-label">Registros hoy</div><div class="stat-value" id="statTotal">0</div></div>
+    <div class="stat-card"><div class="stat-label">En curso</div><div class="stat-value" id="statActive">0</div></div>
+    <div class="stat-card"><div class="stat-label">Completadas</div><div class="stat-value" id="statDone">0</div></div>
+  </div>
+</div>
+
+<!-- Jornadas activas con cronómetros individuales -->
+<div class="card">
+  <div class="activas-section">
+    <div class="section-label">Jornadas en curso</div>
+    <div id="activasContainer">
+      <div class="empty-activas">No hay jornadas activas</div>
+    </div>
+  </div>
+</div>
+
+<!-- Registros del día -->
+<div class="card">
+  <div class="records-section">
+    <div class="section-label">Registros del día</div>
+    <div id="recordsContainer"><div class="records-empty">No hay registros aún</div></div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = '/api/jornada';
+
+  // Mapa de jornadas activas: { codigo: { horaEntrada, intervalId } }
+  const jornadasActivas = {};
+
+  const pad     = n   => String(n).padStart(2,'0');
+  const fmtMs   = ms  => { const s=Math.floor(ms/1000); return `${pad(Math.floor(s/3600))}:${pad(Math.floor((s%3600)/60))}:${pad(s%60)}`; };
+  const fmtTime = iso => iso ? new Date(iso).toLocaleTimeString('es-CO',{hour12:false}) : '—';
+
+  function showAlert(type, msg) {
+    document.getElementById('alertError').classList.remove('show');
+    document.getElementById('alertWarn').classList.remove('show');
+    if (type === 'danger') { document.getElementById('alertErrorMsg').textContent = msg; document.getElementById('alertError').classList.add('show'); }
+    else                   { document.getElementById('alertWarnMsg').textContent  = msg; document.getElementById('alertWarn').classList.add('show'); }
+  }
+
+  function showToast(msg) {
+    document.getElementById('toastMsg').textContent = msg;
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  async function apiPost(endpoint, body) {
+    const res = await fetch(`${API_BASE}/${endpoint}`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
+    });
+    return { status: res.status, data: await res.json() };
+  }
+
+  async function apiGet(endpoint) {
+    const res = await fetch(`${API_BASE}/${endpoint}`);
+    return res.json();
+  }
+
+  //Iniciar jornada 
+  async function handleStart() {
+    document.getElementById('alertError').classList.remove('show');
+    document.getElementById('alertWarn').classList.remove('show');
+
+    const codigo = document.getElementById('codeInput').value.trim().toUpperCase();
+
+    if (!codigo) { showAlert('danger','E01 — El código de trabajador no puede estar vacío.'); return; }
+
+    document.getElementById('btnStart').disabled = true;
+
+    try {
+      const { data } = await apiPost('iniciar', { codigo });
+
+      if (!data.success) {
+        showAlert(['E03','E04'].includes(data.errorCode) ? 'warn' : 'danger', `${data.errorCode} — ${data.message}`);
+        document.getElementById('btnStart').disabled = false;
+        return;
+      }
+
+      // Limpia el input para que otro trabajador pueda registrarse de inmediato
+      document.getElementById('codeInput').value = '';
+      document.getElementById('btnStart').disabled = false;
+
+      // Registra la jornada activa en el mapa local con su cronómetro individual
+      const horaEntrada = new Date(data.data.horaEntrada).getTime();
+      const intervalId  = setInterval(() => {
+        const el = document.getElementById(`timer-${data.data.codigoTrabajador}`);
+        if (el) el.textContent = fmtMs(Date.now() - horaEntrada);
+      }, 1000);
+
+      jornadasActivas[data.data.codigoTrabajador] = { horaEntrada, intervalId, nombre: data.data.nombreTrabajador };
+
+      showToast(`Jornada iniciada — ${data.data.nombreTrabajador}`);
+      await refreshUI();
+
+    } catch {
+      showAlert('danger','E00 — No se pudo conectar con el servidor. Verifique que la API esté corriendo.');
+      document.getElementById('btnStart').disabled = false;
+    }
+  }
+
+  //Terminar jornada
+  async function handleEnd(codigo) {
+    try {
+      const { data } = await apiPost('terminar', { codigo });
+
+      if (!data.success) { showAlert('danger',`${data.errorCode} — ${data.message}`); return; }
+
+      // Detiene el cronómetro individual de ese trabajador
+      if (jornadasActivas[codigo]) {
+        clearInterval(jornadasActivas[codigo].intervalId);
+        delete jornadasActivas[codigo];
+      }
+
+      showToast(`Jornada de ${codigo} registrada — ${data.data.tiempoTotal}`);
+      await refreshUI();
+
+    } catch { showAlert('danger','E00 — Error de conexión con el servidor.'); }
+  }
+
+  //Actualiza toda la UI
+  async function refreshUI() {
+    try {
+      const res = await apiGet('registros');
+      const registros = res.data || [];
+      renderActivas(registros);
+      renderRecords(registros);
+      document.getElementById('statTotal').textContent  = registros.length;
+      document.getElementById('statActive').textContent = registros.filter(r => !r.horaSalida).length;
+      document.getElementById('statDone').textContent   = registros.filter(r =>  r.horaSalida).length;
+    } catch { /* silencioso */ }
+  }
+
+  //Renderiza las jornadas activas con cronómetro individual
+  function renderActivas(registros) {
+    const activas = registros.filter(r => !r.horaSalida);
+    const container = document.getElementById('activasContainer');
+
+    if (!activas.length) {
+      container.innerHTML = '<div class="empty-activas">No hay jornadas activas</div>';
+      return;
+    }
+
+    container.innerHTML = activas.map(r => `
+      <div class="activa-item">
+        <div class="activa-info">
+          <div class="activa-code">
+            <div class="dot-active"></div>
+            ${r.codigoTrabajador} · ${r.nombreTrabajador}
+          </div>
+          <div class="activa-timer" id="timer-${r.codigoTrabajador}">
+            ${fmtMs(Date.now() - new Date(r.horaEntrada).getTime())}
+          </div>
+          <div class="activa-since">Entrada: ${fmtTime(r.horaEntrada)}</div>
+        </div>
+        <button class="btn-end" onclick="handleEnd('${r.codigoTrabajador}')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="10" height="10" rx="1.5"/></svg>
+          Terminar
+        </button>
+      </div>
+    `).join('');
+
+    // Asegura que cada jornada activa tenga su intervalo corriendo
+    activas.forEach(r => {
+      if (!jornadasActivas[r.codigoTrabajador]) {
+        const horaEntrada = new Date(r.horaEntrada).getTime();
+        const intervalId  = setInterval(() => {
+          const el = document.getElementById(`timer-${r.codigoTrabajador}`);
+          if (el) el.textContent = fmtMs(Date.now() - horaEntrada);
+        }, 1000);
+        jornadasActivas[r.codigoTrabajador] = { horaEntrada, intervalId };
+      }
+    });
+  }
+
+  //Renderiza la tabla de registros
+  function renderRecords(registros) {
+    const c = document.getElementById('recordsContainer');
+    if (!registros.length) { c.innerHTML = '<div class="records-empty">No hay registros aún</div>'; return; }
+    c.innerHTML = `
+      <table class="records-table">
+        <thead><tr><th>Código</th><th>Trabajador</th><th>Entrada</th><th>Salida</th><th>Total</th></tr></thead>
+        <tbody>${registros.map(r => `
+          <tr>
+            <td><span class="code-pill">${r.codigoTrabajador}</span></td>
+            <td>${r.nombreTrabajador}</td>
+            <td>${fmtTime(r.horaEntrada)}</td>
+            <td>${r.horaSalida ? fmtTime(r.horaSalida) : '<span class="badge-active"><span class="badge-dot"></span>En curso</span>'}</td>
+            <td>${r.tiempoTotal ? `<span class="total-text">${r.tiempoTotal}</span>` : '—'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  document.getElementById('codeInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleStart();
+  });
+
+  refreshUI();
+</script>
+</body>
+</html>
