@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JornadaLaboral.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1227ff5a2b0ed146912ab517db800f8ca368ee67")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f4a5b038b198347de8ec407905e1c18ab6fa02e2")]
 [assembly: System.Reflection.AssemblyProductAttribute("JornadaLaboral.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JornadaLaboral.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
