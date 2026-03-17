@@ -1,0 +1,6 @@
+@JornadaLaboral.API_HostAddress = http://localhost:5277
+
+GET {{JornadaLaboral.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
